@@ -10,7 +10,6 @@ abstract class AppRoutes {
   static const kLoginView = '/loginView';
   static const kForgetPasswordView = '/forgetPasswordView';
   static const kAdminView = '/adminView';
-  static const kEmployeeView = '/employeeView';
   static const kStuffHomeView = '/stuffHomeView';
 
   static final router = GoRouter(

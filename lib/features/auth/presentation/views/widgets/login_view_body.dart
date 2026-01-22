@@ -23,7 +23,9 @@ class LoginViewBody extends StatelessWidget {
           prefix: Icons.lock,
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            context.push(AppRoutes.kForgetPasswordView);
+          },
           style: TextButton.styleFrom(padding: EdgeInsets.zero),
           child: Text(
             'Forget Password ?',
@@ -38,7 +40,7 @@ class LoginViewBody extends StatelessWidget {
           height: 50,
           child: FilledButton(
             onPressed: () {
-              context.push(AppRoutes.kForgetPasswordView);
+              context.go(AppRoutes.kAdminView);
             },
             style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
