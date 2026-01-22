@@ -40,7 +40,7 @@ class LoginViewBody extends StatelessWidget {
           height: 50,
           child: FilledButton(
             onPressed: () {
-              context.go(AppRoutes.kAdminView);
+              context.go(AppRoutes.kStuffHomeView);
             },
             style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(

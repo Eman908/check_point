@@ -21,11 +21,18 @@ class _AdminNavigationState extends State<AdminNavigation> {
       builder: (context, value, child) {
         return Scaffold(
           body: pages[indexChangeNotifier.value],
+          floatingActionButton:
+              indexChangeNotifier.value == 1
+                  ? FloatingActionButton(
+                    onPressed: () {},
+                    shape: const CircleBorder(),
+                    child: const Icon(Icons.add),
+                  )
+                  : null,
           bottomNavigationBar: BottomNavigationBar(
             onTap: (value) {
               indexChangeNotifier.value = value;
             },
-
             currentIndex: indexChangeNotifier.value,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
