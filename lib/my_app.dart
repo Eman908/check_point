@@ -1,4 +1,5 @@
 import 'package:check_point/core/utils/app_routes.dart';
+import 'package:check_point/core/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CheckPoint extends StatelessWidget {
@@ -7,8 +8,9 @@ class CheckPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      themeMode: ThemeMode.light,
+      theme: AppTheme.lightTheme,
       routerConfig: AppRoutes.router,
-      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
     );
   }
 }

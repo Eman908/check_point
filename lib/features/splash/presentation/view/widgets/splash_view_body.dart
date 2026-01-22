@@ -1,4 +1,5 @@
 import 'package:check_point/core/utils/app_routes.dart';
+import 'package:check_point/core/utils/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,22 +36,28 @@ class _SplashViewBodyState extends State<SplashViewBody>
         builder: (context, _) {
           return SlideTransition(
             position: animation,
-            child: const Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 4,
               children: [
+                Icon(
+                  Icons.location_on_rounded,
+                  weight: 2,
+                  color: context.color.primary,
+                  size: 28,
+                ),
                 Text(
                   "CheckPoint",
-                  style: TextStyle(
-                    color: Color(0xffB20000),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 32,
+                  style: context.textTheme.titleLarge!.copyWith(
+                    color: context.color.primary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Icon(
-                  Icons.location_on_outlined,
-                  weight: 2,
-                  color: Colors.blueAccent,
-                  size: 28,
+                Text(
+                  "Attendance, Verified",
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    color: Colors.black54,
+                  ),
                 ),
               ],
             ),
@@ -63,7 +70,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
   void initAnimation() {
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
     );
     animation = Tween<Offset>(
       begin: const Offset(0, 10),
