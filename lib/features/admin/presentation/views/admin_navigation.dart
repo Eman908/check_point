@@ -1,6 +1,6 @@
-import 'package:check_point/features/admin/presentation/views/tabs/home_tab.dart';
-import 'package:check_point/features/admin/presentation/views/tabs/profile_tab.dart';
-import 'package:check_point/features/admin/presentation/views/tabs/stuff_tab.dart';
+import 'package:check_point/features/admin/presentation/views/tabs/home_tab/home_tab.dart';
+import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/profile_tab.dart';
+import 'package:check_point/features/admin/presentation/views/tabs/staff_tab/staff_tab.dart';
 import 'package:flutter/material.dart';
 
 class AdminNavigation extends StatefulWidget {
@@ -12,7 +12,7 @@ class AdminNavigation extends StatefulWidget {
 
 class _AdminNavigationState extends State<AdminNavigation> {
   ValueNotifier<int> indexChangeNotifier = ValueNotifier<int>(0);
-  List<Widget> pages = const [HomeTab(), StuffTab(), ProfileTab()];
+  List<Widget> pages = [const HomeTab(), const StaffTab(), const ProfileTab()];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _AdminNavigationState extends State<AdminNavigation> {
             currentIndex: indexChangeNotifier.value,
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.people), label: "Stuff"),
+              BottomNavigationBarItem(icon: Icon(Icons.people), label: "Staff"),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
                 label: "Profile",

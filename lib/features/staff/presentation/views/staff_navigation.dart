@@ -1,15 +1,15 @@
-import 'package:check_point/features/stuff/presentation/views/tabs/stuff_home_tab.dart';
-import 'package:check_point/features/stuff/presentation/views/tabs/stuff_profile_tab.dart';
+import 'package:check_point/features/staff/presentation/views/tabs/staff_home_tab.dart';
+import 'package:check_point/features/staff/presentation/views/tabs/staff_profile_tab.dart';
 import 'package:flutter/material.dart';
 
-class StuffNavigation extends StatefulWidget {
-  const StuffNavigation({super.key});
+class StaffNavigation extends StatefulWidget {
+  const StaffNavigation({super.key});
 
   @override
-  State<StuffNavigation> createState() => _StuffNavigationState();
+  State<StaffNavigation> createState() => _StaffNavigationState();
 }
 
-class _StuffNavigationState extends State<StuffNavigation> {
+class _StaffNavigationState extends State<StaffNavigation> {
   ValueNotifier<int> indexChangeNotifier = ValueNotifier(0);
   List<Widget> pages = const [StuffHomeTab(), StuffProfileTab()];
 

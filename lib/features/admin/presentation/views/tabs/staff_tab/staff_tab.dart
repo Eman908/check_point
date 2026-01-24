@@ -2,8 +2,8 @@ import 'package:check_point/core/utils/padding_extension.dart';
 import 'package:check_point/core/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
-class StuffTab extends StatelessWidget {
-  const StuffTab({super.key});
+class StaffTab extends StatelessWidget {
+  const StaffTab({super.key});
 
   @override
   Widget build(BuildContext context) {
