@@ -1,5 +1,6 @@
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract interface class FirebaseUserDataSource {
   Future<Results<String>> updateUserName(String name);
@@ -12,4 +13,7 @@ abstract interface class FirebaseUserDataSource {
     required String email,
     required String managerId,
   });
+  Future<Results<Stream<QuerySnapshot<UserModel>>>> getStaffList(
+    String managerId,
+  );
 }

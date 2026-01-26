@@ -1,5 +1,6 @@
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract interface class UserRepo {
   Future<Results<String>> userChangeUserName(String name);
@@ -10,4 +11,5 @@ abstract interface class UserRepo {
     String newPassword,
   );
   Future<Results<String>> addStaff({required String email});
+  Future<Results<Stream<QuerySnapshot<UserModel>>>> getStaffList();
 }

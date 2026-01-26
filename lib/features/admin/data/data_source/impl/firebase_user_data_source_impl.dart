@@ -5,6 +5,7 @@ import 'package:check_point/core/firebase/auth_service.dart';
 import 'package:check_point/core/firebase/users_service.dart';
 import 'package:check_point/core/models/user_model.dart';
 import 'package:check_point/features/admin/data/data_source/contract/firebase_user_data_source.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: FirebaseUserDataSource)
@@ -56,6 +57,16 @@ class FirebaseUserDataSourceImpl implements FirebaseUserDataSource {
         return Failure(message: 'You cannot add a manager');
       }
       return Success(data: 'Success');
+    });
+  }
+
+  @override
+  Future<Results<Stream<QuerySnapshot<UserModel>>>> getStaffList(
+    String managerId,
+  ) {
+    return safeCall(() async {
+      var response = _userService.getStaffList(managerId);
+      return Success(data: response);
     });
   }
 }

@@ -14,7 +14,6 @@ class AdminNavigation extends StatefulWidget {
 class _AdminNavigationState extends State<AdminNavigation> {
   ValueNotifier<int> indexChangeNotifier = ValueNotifier<int>(0);
   List<Widget> pages = [const HomeTab(), const StaffTab(), const ProfileTab()];
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(

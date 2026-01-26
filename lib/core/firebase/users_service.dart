@@ -61,6 +61,14 @@ class UsersService {
     await AuthService.firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
+  Stream<QuerySnapshot<UserModel>> getStaffList(String managerId) {
+    var staffList =
+        getUserCollection()
+            .where('managerId', isEqualTo: managerId)
+            .snapshots();
+    return staffList;
+  }
+
   Future<UserModel?> getUserData() async {
     String userId = AuthService.firebaseAuth.currentUser!.uid;
     var userCollection = getUserCollection().doc(userId);
