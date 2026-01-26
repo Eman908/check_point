@@ -18,10 +18,18 @@ class StaffTab extends StatefulWidget {
 }
 
 class _StaffTabState extends State<StaffTab> {
+  TextEditingController search = TextEditingController();
   @override
   void initState() {
     super.initState();
     context.read<StaffCubit>().doAction(GetManagerStaff());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    search.dispose();
   }
 
   @override
@@ -88,11 +96,28 @@ class _StaffTabState extends State<StaffTab> {
               }
 
               final staffList = snapshot.data!.docs;
-
+              final filteredList =
+                  staffList
+                      .where(
+                        (e) =>
+                            e.data().userName.toLowerCase().contains(
+                              search.text.toLowerCase(),
+                            ) ||
+                            e.data().email.toLowerCase().contains(
+                              search.text.toLowerCase(),
+                            ),
+                      )
+                      .toList();
               return Column(
                 children: [
-                  const CustomTextFormField(
+                  CustomTextFormField(
                     hintText: 'Search',
+                    controller: search,
+                    onChanged: (value) {
+                      search.text = value;
+
+                      setState(() {});
+                    },
                     prefix: Icons.search,
                   ),
                   Expanded(
@@ -101,11 +126,16 @@ class _StaffTabState extends State<StaffTab> {
                       separatorBuilder:
                           (context, index) =>
                               const Divider(color: Colors.black12),
-                      itemCount: staffList.length,
+                      itemCount:
+                          search.text.isNotEmpty
+                              ? filteredList.length
+                              : staffList.length,
                       itemBuilder: (context, index) {
                         final staff = staffList[index].data();
-
-                        return StaffCard(user: staff);
+                        final filteredStaff = filteredList[index].data();
+                        return StaffCard(
+                          user: search.text.isNotEmpty ? filteredStaff : staff,
+                        );
                       },
                     ),
                   ),
