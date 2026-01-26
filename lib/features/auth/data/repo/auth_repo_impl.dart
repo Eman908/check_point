@@ -14,22 +14,6 @@ class AuthRepoImpl implements AuthRepo {
   final UsersService _usersService = getIt();
   final FirebaseAuthDataSource _firebaseAuthDataSource = getIt();
   final SharedPreferences _preferences = getIt();
-  @override
-  Future<Results<String>> userChangePassword(
-    String currentPassword,
-    String newPassword,
-  ) async {
-    var response = await _firebaseAuthDataSource.userChangePassword(
-      currentPassword,
-      newPassword,
-    );
-    switch (response) {
-      case Success<String>():
-        return Success();
-      case Failure<String>():
-        return Failure(message: response.message);
-    }
-  }
 
   @override
   Future<Results<User>> userLogin(String email, String password) async {
@@ -50,8 +34,7 @@ class AuthRepoImpl implements AuthRepo {
         var token = await response.data?.getIdToken();
         _preferences.setString(Constants.userToken, token ?? '');
         _preferences.setString(Constants.userRole, role);
-        _preferences.setString(Constants.userName, user.userName);
-        _preferences.setString(Constants.userEmail, user.email);
+        _preferences.setString(Constants.userId, user.userId);
         await _usersService.setUser(user);
         return Success(data: response.data);
       case Failure<User>():
@@ -78,29 +61,6 @@ class AuthRepoImpl implements AuthRepo {
         return Success();
       case Failure<void>():
         return Failure();
-    }
-  }
-
-  @override
-  Future<Results<String>> userChangeUserName(String name) async {
-    var response = await _firebaseAuthDataSource.updateUserName(name);
-    switch (response) {
-      case Success<String>():
-        _preferences.setString(Constants.userName, name);
-        return Success();
-      case Failure<String>():
-        return Failure(message: response.message);
-    }
-  }
-
-  @override
-  Future<Results<UserModel>> getUserData() async {
-    var response = await _firebaseAuthDataSource.getUserData();
-    switch (response) {
-      case Success<UserModel>():
-        return Success(data: response.data);
-      case Failure<UserModel>():
-        return Failure(message: response.message);
     }
   }
 }

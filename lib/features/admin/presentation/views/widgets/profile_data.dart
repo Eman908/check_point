@@ -1,3 +1,5 @@
+import 'package:check_point/core/di/di.dart';
+import 'package:check_point/core/utils/constants.dart';
 import 'package:check_point/core/widgets/custom_text_field.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/cubit/profile_cubit.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/cubit/profile_state.dart';
@@ -5,6 +7,7 @@ import 'package:check_point/core/base/base_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserData extends StatefulWidget {
   const UserData({super.key, required this.cubit});
@@ -17,11 +20,12 @@ class UserData extends StatefulWidget {
 
 class _UserDataState extends State<UserData> {
   TextEditingController name = TextEditingController();
+  final SharedPreferences prefs = getIt<SharedPreferences>();
 
   @override
   void initState() {
     super.initState();
-    widget.cubit.doAction(GetUserData());
+    //widget.cubit.doAction(GetUserData());
   }
 
   @override
@@ -59,7 +63,8 @@ class _UserDataState extends State<UserData> {
         }
 
         final userData = state.getUserDataState.data;
-
+        final String nameP = prefs.getString(Constants.userName) ?? '';
+        final String emailP = prefs.getString(Constants.userEmail) ?? '';
         return ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
@@ -74,7 +79,7 @@ class _UserDataState extends State<UserData> {
           title: Row(
             spacing: 8,
             children: [
-              Text(userData?.userName ?? 'User Name'),
+              Text(userData?.userName ?? nameP),
               InkWell(
                 onTap: () {
                   name.text = userData?.userName ?? '';
@@ -92,17 +97,21 @@ class _UserDataState extends State<UserData> {
                         actions: [
                           TextButton(
                             onPressed: () {
+                              name.clear();
                               context.pop();
                             },
                             child: const Text('Cancel'),
                           ),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (name.text.trim().isNotEmpty) {
-                                widget.cubit.doAction(
+                                await widget.cubit.doAction(
                                   UpdateUserNameAction(name.text.trim()),
                                 );
-                                context.pop();
+                                name.clear();
+                                if (context.mounted) {
+                                  context.pop();
+                                }
                               }
                             },
                             child: const Text('Save'),
@@ -116,7 +125,7 @@ class _UserDataState extends State<UserData> {
               ),
             ],
           ),
-          subtitle: Text(userData?.email ?? 'email@example.com'),
+          subtitle: Text(userData?.email ?? emailP),
         );
       },
     );

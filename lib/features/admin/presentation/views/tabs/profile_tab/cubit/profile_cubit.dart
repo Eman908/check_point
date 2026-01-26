@@ -3,6 +3,7 @@ import 'package:check_point/core/base/base_state.dart';
 import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/models/user_model.dart';
+import 'package:check_point/features/admin/domain/repo/user_repo.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/cubit/profile_state.dart';
 import 'package:check_point/features/auth/domain/repo/auth_repo.dart';
 import 'package:injectable/injectable.dart';
@@ -10,7 +11,9 @@ import 'package:injectable/injectable.dart';
 @injectable
 class ProfileCubit extends BaseCubit<ProfileState, ProfileActions> {
   ProfileCubit() : super(ProfileState());
+  final UserRepo _userRepo = getIt<UserRepo>();
   final AuthRepo _authRepo = getIt<AuthRepo>();
+
   @override
   Future<void> doAction(ProfileActions action) async {
     switch (action) {
@@ -32,7 +35,7 @@ class ProfileCubit extends BaseCubit<ProfileState, ProfileActions> {
 
   Future<void> _getUserData() async {
     safeEmit(state.copyWith(getUserDataState: const BaseStatus.loading()));
-    var response = await _authRepo.getUserData();
+    var response = await _userRepo.getUserData();
     switch (response) {
       case Success<UserModel>():
         safeEmit(
@@ -41,13 +44,17 @@ class ProfileCubit extends BaseCubit<ProfileState, ProfileActions> {
           ),
         );
       case Failure<UserModel>():
-        safeEmit(state.copyWith(getUserDataState: const BaseStatus.failure()));
+        safeEmit(
+          state.copyWith(
+            getUserDataState: BaseStatus.failure(message: response.message),
+          ),
+        );
     }
   }
 
   Future<void> _updateUserName(String name) async {
     safeEmit(state.copyWith(updateUserNameState: const BaseStatus.loading()));
-    var response = await _authRepo.userChangeUserName(name);
+    var response = await _userRepo.userChangeUserName(name);
     switch (response) {
       case Success<void>():
         safeEmit(
@@ -67,7 +74,7 @@ class ProfileCubit extends BaseCubit<ProfileState, ProfileActions> {
     String newPassword,
   ) async {
     safeEmit(state.copyWith(changePasswordState: const BaseStatus.loading()));
-    var response = await _authRepo.userChangePassword(
+    var response = await _userRepo.userChangePassword(
       currentPassword,
       newPassword,
     );
@@ -78,7 +85,9 @@ class ProfileCubit extends BaseCubit<ProfileState, ProfileActions> {
         );
       case Failure<String>():
         safeEmit(
-          state.copyWith(changePasswordState: const BaseStatus.failure()),
+          state.copyWith(
+            changePasswordState: BaseStatus.failure(message: response.message),
+          ),
         );
     }
   }
@@ -94,7 +103,11 @@ class ProfileCubit extends BaseCubit<ProfileState, ProfileActions> {
       case Success<void>():
         safeEmit(state.copyWith(logoutState: const BaseStatus.success()));
       case Failure<void>():
-        safeEmit(state.copyWith(logoutState: const BaseStatus.failure()));
+        safeEmit(
+          state.copyWith(
+            logoutState: BaseStatus.failure(message: response.message),
+          ),
+        );
     }
   }
 }

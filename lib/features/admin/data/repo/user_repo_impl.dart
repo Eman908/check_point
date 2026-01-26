@@ -1,0 +1,70 @@
+import 'package:check_point/core/di/di.dart';
+import 'package:check_point/core/error/results.dart';
+import 'package:check_point/core/models/user_model.dart';
+import 'package:check_point/core/utils/constants.dart';
+import 'package:check_point/features/admin/data/data_source/contract/firebase_user_data_source.dart';
+import 'package:check_point/features/admin/domain/repo/user_repo.dart';
+import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+@Injectable(as: UserRepo)
+class UserRepoImpl implements UserRepo {
+  final FirebaseUserDataSource _firebaseAuthDataSource = getIt();
+  final SharedPreferences _preferences = getIt();
+
+  @override
+  Future<Results<String>> userChangePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    var response = await _firebaseAuthDataSource.userChangePassword(
+      currentPassword,
+      newPassword,
+    );
+    switch (response) {
+      case Success<String>():
+        return Success();
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<String>> userChangeUserName(String name) async {
+    var response = await _firebaseAuthDataSource.updateUserName(name);
+    switch (response) {
+      case Success<String>():
+        _preferences.setString(Constants.userName, name);
+        return Success();
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<UserModel>> getUserData() async {
+    var response = await _firebaseAuthDataSource.getUserData();
+    switch (response) {
+      case Success<UserModel>():
+        return Success(data: response.data);
+      case Failure<UserModel>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<String>> addStaff({required String email}) async {
+    final String managerIdSaved =
+        _preferences.getString(Constants.userId) ?? '';
+    var response = await _firebaseAuthDataSource.addStaff(
+      email: email,
+      managerId: managerIdSaved,
+    );
+    switch (response) {
+      case Success<String>():
+        return Success();
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
+}

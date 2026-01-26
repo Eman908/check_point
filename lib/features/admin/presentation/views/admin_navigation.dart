@@ -1,6 +1,7 @@
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/home_tab.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/profile_tab.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/staff_tab/staff_tab.dart';
+import 'package:check_point/features/admin/presentation/views/widgets/add_staff_window.dart';
 import 'package:flutter/material.dart';
 
 class AdminNavigation extends StatefulWidget {
@@ -24,7 +25,12 @@ class _AdminNavigationState extends State<AdminNavigation> {
           floatingActionButton:
               indexChangeNotifier.value == 1
                   ? FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const AddStaffWindow(),
+                      );
+                    },
                     shape: const CircleBorder(),
                     child: const Icon(Icons.add),
                   )

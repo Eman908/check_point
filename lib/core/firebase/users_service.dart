@@ -1,12 +1,15 @@
+import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/firebase/auth_service.dart';
 import 'package:check_point/core/models/user_model.dart';
 import 'package:check_point/core/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class UsersService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  AuthService authService = getIt<AuthService>();
   CollectionReference<UserModel> getUserCollection() {
     return firestore
         .collection(Constants.userCollection)
@@ -34,6 +37,28 @@ class UsersService {
     }
 
     await userCollection.update(data);
+  }
+
+  ///manager id
+  ///check if this is the current email
+  Future<void> addStaff({
+    required String email,
+    required String managerId,
+  }) async {
+    UserCredential credential = await AuthService.firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: 'Temp@123456');
+
+    final uid = credential.user!.uid;
+    UserModel user = UserModel(
+      userName: '',
+      userId: uid,
+      email: email,
+      role: 'staff',
+      managerId: managerId,
+      status: 'invited',
+    );
+    await setUser(user);
+    await AuthService.firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   Future<UserModel?> getUserData() async {

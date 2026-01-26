@@ -38,7 +38,9 @@ class AuthCubit extends BaseCubit<AuthState, AuthActions> {
         );
       case Failure<void>():
         safeEmit(
-          state.copyWith(resetPasswordState: const BaseStatus.failure()),
+          state.copyWith(
+            resetPasswordState: BaseStatus.failure(message: response.message),
+          ),
         );
     }
   }

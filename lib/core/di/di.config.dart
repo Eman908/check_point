@@ -13,8 +13,16 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../../features/admin/data/data_source/contract/firebase_user_data_source.dart'
+    as _i27;
+import '../../features/admin/data/data_source/impl/firebase_user_data_source_impl.dart'
+    as _i648;
+import '../../features/admin/data/repo/user_repo_impl.dart' as _i238;
+import '../../features/admin/domain/repo/user_repo.dart' as _i161;
 import '../../features/admin/presentation/views/tabs/profile_tab/cubit/profile_cubit.dart'
     as _i708;
+import '../../features/admin/presentation/views/tabs/staff_tab/cubit/staff_cubit.dart'
+    as _i733;
 import '../../features/auth/data/data_source/contract/firebase_auth_data_source.dart'
     as _i947;
 import '../../features/auth/data/data_source/impl/firebase_auth_data_source_impl.dart'
@@ -41,7 +49,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i35.AuthService>(() => _i35.AuthService());
     gh.factory<_i1038.UsersService>(() => _i1038.UsersService());
     gh.factory<_i708.ProfileCubit>(() => _i708.ProfileCubit());
+    gh.factory<_i733.StaffCubit>(() => _i733.StaffCubit());
     gh.factory<_i117.AuthCubit>(() => _i117.AuthCubit());
+    gh.factory<_i161.UserRepo>(() => _i238.UserRepoImpl());
+    gh.factory<_i27.FirebaseUserDataSource>(
+      () => _i648.FirebaseUserDataSourceImpl(),
+    );
     gh.factory<_i947.FirebaseAuthDataSource>(
       () => _i6.FirebaseAuthDataSourceImpl(),
     );
