@@ -3,6 +3,7 @@ import 'package:check_point/core/utils/padding_extension.dart';
 import 'package:check_point/core/utils/white_space_extension.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/cubit/profile_cubit.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/cubit/profile_state.dart';
+import 'package:check_point/features/staff/presentation/views/widgets/staff_profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,12 +16,7 @@ class StuffProfileTab extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: CircleAvatar(radius: 24),
-          title: Text("Username"),
-          subtitle: Text("Email"),
-        ),
+        StaffProfileData(cubit: context.read<ProfileCubit>()),
         const Divider(),
         8.verticalSpace,
         const ListTile(
@@ -28,10 +24,13 @@ class StuffProfileTab extends StatelessWidget {
           title: Text("Attendance History"),
           trailing: Icon(Icons.arrow_forward_ios),
         ),
-        const ListTile(
+        ListTile(
+          onTap: () {
+            context.push(AppRoutes.kChangePasswordView);
+          },
           contentPadding: EdgeInsets.zero,
-          title: Text("Change Password"),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text("Change Password"),
+          trailing: const Icon(Icons.arrow_forward_ios),
         ),
         8.verticalSpace,
 

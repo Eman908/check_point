@@ -1,5 +1,5 @@
-import 'package:check_point/features/staff/presentation/views/tabs/staff_home_tab.dart';
-import 'package:check_point/features/staff/presentation/views/tabs/staff_profile_tab.dart';
+import 'package:check_point/features/staff/presentation/views/tabs/staff_home_tab/staff_home_tab.dart';
+import 'package:check_point/features/staff/presentation/views/tabs/staff_profile_tab/staff_profile_tab.dart';
 import 'package:flutter/material.dart';
 
 class StaffNavigation extends StatefulWidget {
