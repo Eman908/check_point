@@ -6,7 +6,6 @@ import 'package:check_point/features/auth/presentation/views/forget_password_vie
 import 'package:check_point/features/auth/presentation/views/login_view.dart';
 import 'package:check_point/features/splash/presentation/view/splash_view.dart';
 import 'package:check_point/features/staff/presentation/views/staff_navigation.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,60 +17,52 @@ abstract class AppRoutes {
   static const kStaffHomeView = '/staffHomeView';
   static const kChangePasswordView = '/changePasswordView';
 
-  static String _getInitialLocation() {
-    final SharedPreferences prefs = getIt<SharedPreferences>();
-    final token = prefs.getString(Constants.userToken);
-    final userRole = prefs.getString(Constants.userRole);
-
-    if (token == null || token.isEmpty) {
-      return kSplashView;
-    }
-
-    if (userRole == 'manager') {
-      return kAdminView;
-    } else if (userRole == 'staff') {
-      return kStaffHomeView;
-    }
-
-    return kSplashView;
-  }
-
   static final router = GoRouter(
-    initialLocation: _getInitialLocation(),
+    initialLocation: kSplashView,
+
+    redirect: (context, state) {
+      final prefs = getIt<SharedPreferences>();
+      final token = prefs.getString(Constants.userToken);
+      final role = prefs.getString(Constants.userRole);
+
+      final isLoggingIn = state.uri.toString() == kLoginView;
+
+      if (token == null || token.isEmpty) {
+        return isLoggingIn ? null : kLoginView;
+      }
+
+      if (role == 'manager') {
+        return state.uri.toString() == kAdminView ? null : kAdminView;
+      }
+
+      if (role == 'staff') {
+        return state.uri.toString() == kStaffHomeView ? null : kStaffHomeView;
+      }
+
+      return null;
+    },
+
     routes: [
       GoRoute(
         path: kSplashView,
-        builder:
-            (BuildContext context, GoRouterState state) => const SplashView(),
+        builder: (context, state) => const SplashView(),
       ),
-      GoRoute(
-        path: kLoginView,
-        builder:
-            (BuildContext context, GoRouterState state) => const LoginView(),
-      ),
+      GoRoute(path: kLoginView, builder: (context, state) => const LoginView()),
       GoRoute(
         path: kChangePasswordView,
-        builder:
-            (BuildContext context, GoRouterState state) =>
-                const ChangePassword(),
+        builder: (context, state) => const ChangePassword(),
       ),
       GoRoute(
         path: kForgetPasswordView,
-        builder:
-            (BuildContext context, GoRouterState state) =>
-                const ForgetPasswordView(),
+        builder: (context, state) => const ForgetPasswordView(),
       ),
       GoRoute(
         path: kAdminView,
-        builder:
-            (BuildContext context, GoRouterState state) =>
-                const AdminNavigation(),
+        builder: (context, state) => const AdminNavigation(),
       ),
       GoRoute(
         path: kStaffHomeView,
-        builder:
-            (BuildContext context, GoRouterState state) =>
-                const StaffNavigation(),
+        builder: (context, state) => const StaffNavigation(),
       ),
     ],
   );

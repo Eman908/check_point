@@ -17,6 +17,7 @@ class AuthRepoImpl implements AuthRepo {
 
   @override
   Future<Results<User>> userLogin(String email, String password) async {
+    await _preferences.reload();
     var response = await _firebaseAuthDataSource.userLogin(email, password);
     switch (response) {
       case Success<User>():
