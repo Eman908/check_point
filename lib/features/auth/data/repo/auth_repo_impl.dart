@@ -32,10 +32,12 @@ class AuthRepoImpl implements AuthRepo {
           role: role,
         );
         var token = await response.data?.getIdToken();
+
         _preferences.setString(Constants.userToken, token ?? '');
         _preferences.setString(Constants.userRole, role);
         _preferences.setString(Constants.userId, user.userId);
         await _usersService.setUser(user);
+        await _usersService.updateState();
         return Success(data: response.data);
       case Failure<User>():
         return Failure(message: response.message);

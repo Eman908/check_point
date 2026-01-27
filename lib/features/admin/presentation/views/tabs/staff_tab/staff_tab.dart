@@ -6,6 +6,7 @@ import 'package:check_point/core/widgets/custom_text_field.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/staff_tab/cubit/staff_cubit.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/staff_tab/cubit/staff_state.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/staff_card.dart';
+import 'package:check_point/features/admin/presentation/views/widgets/staff_tab_error_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,26 +43,7 @@ class _StaffTabState extends State<StaffTab> {
           }
 
           if (state.getStaff.status == Status.failure) {
-            return Center(
-              child: Column(
-                spacing: 16,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error, color: Colors.red),
-                  Text(
-                    state.getStaff.message ?? 'Failed to load staff',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<StaffCubit>().doAction(GetManagerStaff());
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            );
+            return StaffTabErrorWidget(message: state.getStaff.message);
           }
 
           final Stream<QuerySnapshot<UserModel>>? staffStream =

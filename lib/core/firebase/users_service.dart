@@ -39,6 +39,16 @@ class UsersService {
     await userCollection.update(data);
   }
 
+  Future<void> updateState() async {
+    var collection = getUserCollection();
+    final currentUser = AuthService.firebaseAuth.currentUser;
+
+    if (currentUser != null) {
+      final userId = currentUser.uid;
+      await collection.doc(userId).update({'status': 'active'});
+    }
+  }
+
   ///manager id
   ///check if this is the current email
   Future<void> addStaff({

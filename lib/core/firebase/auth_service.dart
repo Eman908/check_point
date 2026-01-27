@@ -2,11 +2,13 @@ import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/firebase/users_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class AuthService {
   static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   static final UsersService _userService = getIt();
+  static final SharedPreferences _preferences = getIt();
   Future<UserCredential> login(String email, String password) async {
     final credential = await firebaseAuth.signInWithEmailAndPassword(
       email: email,
@@ -16,6 +18,7 @@ class AuthService {
   }
 
   Future<void> signOut() async {
+    await _preferences.clear();
     await firebaseAuth.signOut();
   }
 

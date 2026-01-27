@@ -53,7 +53,7 @@ class ProfileTab extends StatelessWidget {
               child: FilledButton(
                 onPressed: () {
                   cubit.doAction(Logout());
-                  context.go(AppRoutes.kLoginView);
+                  if (context.mounted) context.go(AppRoutes.kLoginView);
                 },
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
