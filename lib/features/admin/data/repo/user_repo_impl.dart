@@ -1,5 +1,6 @@
 import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/error/results.dart';
+import 'package:check_point/core/models/shift_model.dart';
 import 'package:check_point/core/models/user_model.dart';
 import 'package:check_point/core/utils/constants.dart';
 import 'package:check_point/features/admin/data/data_source/contract/firebase_user_data_source.dart';
@@ -77,6 +78,28 @@ class UserRepoImpl implements UserRepo {
       case Success<Stream<QuerySnapshot<UserModel>>>():
         return Success(data: response.data);
       case Failure<Stream<QuerySnapshot<UserModel>>>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<Stream<QuerySnapshot<ShiftModel>>>> getShift() async {
+    var response = await _firebaseAuthDataSource.getShift();
+    switch (response) {
+      case Success<Stream<QuerySnapshot<ShiftModel>>>():
+        return Success(data: response.data);
+      case Failure<Stream<QuerySnapshot<ShiftModel>>>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<String>> startShift(ShiftModel shift) async {
+    var response = await _firebaseAuthDataSource.startShift(shift);
+    switch (response) {
+      case Success<String>():
+        return Success();
+      case Failure<String>():
         return Failure(message: response.message);
     }
   }

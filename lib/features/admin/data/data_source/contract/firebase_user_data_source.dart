@@ -1,4 +1,5 @@
 import 'package:check_point/core/error/results.dart';
+import 'package:check_point/core/models/shift_model.dart';
 import 'package:check_point/core/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -16,4 +17,7 @@ abstract interface class FirebaseUserDataSource {
   Future<Results<Stream<QuerySnapshot<UserModel>>>> getStaffList(
     String managerId,
   );
+
+  Future<Results<String>> startShift(ShiftModel shift);
+  Future<Results<Stream<QuerySnapshot<ShiftModel>>>> getShift();
 }

@@ -19,6 +19,8 @@ import '../../features/admin/data/data_source/impl/firebase_user_data_source_imp
     as _i648;
 import '../../features/admin/data/repo/user_repo_impl.dart' as _i238;
 import '../../features/admin/domain/repo/user_repo.dart' as _i161;
+import '../../features/admin/presentation/views/tabs/home_tab/cubit/shift_cubit.dart'
+    as _i672;
 import '../../features/admin/presentation/views/tabs/profile_tab/cubit/profile_cubit.dart'
     as _i708;
 import '../../features/admin/presentation/views/tabs/staff_tab/cubit/staff_cubit.dart'
@@ -31,6 +33,7 @@ import '../../features/auth/data/repo/auth_repo_impl.dart' as _i984;
 import '../../features/auth/domain/repo/auth_repo.dart' as _i170;
 import '../../features/auth/presentation/cubit/auth_cubit.dart' as _i117;
 import '../firebase/auth_service.dart' as _i35;
+import '../firebase/shifts_service.dart' as _i736;
 import '../firebase/users_service.dart' as _i1038;
 import 'modules/shared_preference_module.dart' as _i890;
 
@@ -47,7 +50,9 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i35.AuthService>(() => _i35.AuthService());
+    gh.factory<_i736.ShiftsService>(() => _i736.ShiftsService());
     gh.factory<_i1038.UsersService>(() => _i1038.UsersService());
+    gh.factory<_i672.ShiftCubit>(() => _i672.ShiftCubit());
     gh.factory<_i708.ProfileCubit>(() => _i708.ProfileCubit());
     gh.factory<_i733.StaffCubit>(() => _i733.StaffCubit());
     gh.factory<_i117.AuthCubit>(() => _i117.AuthCubit());
