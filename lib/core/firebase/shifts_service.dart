@@ -17,17 +17,23 @@ class ShiftsService {
         );
   }
 
-  Future<void> setShift(ShiftModel shift) async {
+  Future<String> setShift(ShiftModel shift) async {
     var collection = createShiftsCollection();
+
     var isExisted =
-        await collection
-            .where('qrCode', isEqualTo: shift.qrCode)
-            .where('managerId', isEqualTo: shift.managerId)
-            .get();
+        await collection.where('managerId', isEqualTo: shift.managerId).get();
+
     if (isExisted.docs.isNotEmpty) {
       throw Exception('Shift already exists');
     }
-    await collection.doc().set(shift);
+    var docRef = collection.doc();
+    await docRef.set(shift);
+    return docRef.id;
+  }
+
+  endShift(String shiftId) async {
+    var collection = createShiftsCollection();
+    await collection.doc(shiftId).delete();
   }
 
   Stream<QuerySnapshot<ShiftModel>> getShift() {
@@ -37,5 +43,9 @@ class ShiftsService {
     );
     var data = collection.snapshots();
     return data;
+  }
+
+  Future<void> updateShiftQr(String newQr, String shiftId) async {
+    await createShiftsCollection().doc(shiftId).update({'qrCode': newQr});
   }
 }

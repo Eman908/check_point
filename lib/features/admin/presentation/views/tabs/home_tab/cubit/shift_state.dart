@@ -8,20 +8,25 @@ class ShiftState {
   TimeOfDay? startTime;
   TimeOfDay? endTime;
   final String? qrCode;
+  final String? shiftId;
+
   ShiftState({
     this.createShift = const BaseStatus.initial(),
     this.getShift = const BaseStatus.initial(),
     this.startTime,
     this.endTime,
     this.qrCode,
+    this.shiftId,
   });
 
   ShiftState copyWith({
     BaseStatus? createShift,
+    BaseStatus? endShift,
     BaseStatus? getShift,
     TimeOfDay? startTime,
     TimeOfDay? endTime,
     String? qrCode,
+    String? shiftId,
   }) {
     return ShiftState(
       createShift: createShift ?? this.createShift,
@@ -29,6 +34,7 @@ class ShiftState {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       qrCode: qrCode ?? this.qrCode,
+      shiftId: shiftId ?? this.shiftId,
     );
   }
 }
@@ -53,3 +59,7 @@ final class EndTimeUpdate extends ShiftActions {
 }
 
 final class QrCodeUpdate extends ShiftActions {}
+
+final class StopShift extends ShiftActions {}
+
+final class EndShift extends ShiftActions {}

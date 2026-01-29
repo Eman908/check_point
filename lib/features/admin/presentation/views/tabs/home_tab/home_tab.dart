@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:check_point/core/base/base_state.dart';
 import 'package:check_point/core/models/shift_model.dart';
 import 'package:check_point/core/utils/padding_extension.dart';
@@ -24,16 +25,30 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     context.read<ShiftCubit>().doAction(GetShift());
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ShiftCubit, ShiftState>(
+    return BlocBuilder<ShiftCubit, ShiftState>(
       builder: (context, state) {
+        if (state.createShift.status == Status.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            snackBar(
+              message: state.createShift.message ?? 'Failed to start shift',
+              bgColor: Colors.red,
+            ),
+          );
+        }
         final Stream<QuerySnapshot<ShiftModel>>? shift = state.getShift.data;
+
         return StreamBuilder(
           stream: shift,
           builder: (context, snapshot) {
@@ -57,7 +72,11 @@ class _HomeTabState extends State<HomeTab> {
                       onPressed: () {
                         showDialog(
                           context: context,
-                          builder: (context) => const StartShiftWindow(),
+                          builder:
+                              (dialogContext) => BlocProvider.value(
+                                value: context.read<ShiftCubit>(),
+                                child: const StartShiftWindow(),
+                              ),
                         );
                       },
                       style: FilledButton.styleFrom(
@@ -71,130 +90,88 @@ class _HomeTabState extends State<HomeTab> {
                 ],
               ).horizontalPadding(16);
             }
-            final staffData = snapshot.data!.docs.first.data();
+
+            final shiftData = snapshot.data!.docs.first.data();
+
+            final qrCode = state.qrCode ?? shiftData.qrCode;
+
             return SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   StatusCard(
-                    title: staffData.isActive ? 'Active' : 'Inactive',
-                    color: staffData.isActive ? Colors.green : Colors.red,
+                    title: shiftData.isActive ? 'Active' : 'Inactive',
+                    color: shiftData.isActive ? Colors.green : Colors.red,
                   ),
                   16.verticalSpace,
-                  Text(
-                    "${DateFormat('h:mm a').format(staffData.startTime)} - ${DateFormat('h:mm a').format(staffData.endTime)}",
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${DateFormat('h:mm a').format(shiftData.startTime)} - ${DateFormat('h:mm a').format(shiftData.endTime)}",
+                      ),
+                    ],
                   ),
-
+                  16.verticalSpace,
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: QrImageView(data: staffData.qrCode),
+                    child: QrImageView(data: qrCode, size: 200),
                   ),
-                  const Text('QR expires in 02:30'),
+                  8.verticalSpace,
+                  const Text('QR refreshes every 3 minutes'),
+                  16.verticalSpace,
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: FilledButton(
+                      onPressed: () {
+                        //context.read<ShiftCubit>().doAction(EndShift());
+                        final cubit = context.read<ShiftCubit>();
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                insetPadding: EdgeInsets.zero,
+                                title: const Text('End Shift'),
+                                content: const Text(
+                                  'Are you sure you want to end the shift?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => {context.pop()},
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await cubit.doAction(EndShift());
+                                      if (context.mounted) {
+                                        context.pop();
+                                      }
+                                    },
+                                    child: const Text('End Shift'),
+                                  ),
+                                ],
+                              ),
+                        );
+                      },
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('End Shift Now'),
+                    ),
+                  ),
                 ],
-              ),
+              ).horizontalPadding(16),
             );
           },
         );
       },
-      listener: (BuildContext context, ShiftState state) {
-        if (state.createShift.status == Status.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBar(
-              message: state.createShift.message ?? 'Success',
-              bgColor: Colors.green,
-            ),
-          );
-          context.pop();
-        } else if (state.createShift.status == Status.failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBar(
-              message: state.createShift.message ?? 'something went wrong',
-              bgColor: Colors.red,
-            ),
-          );
-          context.pop();
-        }
-      },
     );
   }
 }
-
-
-
-///-----------------Start Shift Ui
-
-// SafeArea(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           const Text('Active Shift'),
-//           const Text("09:00 - 12:00"),
-//           16.verticalSpace,
-//           Container(color: Colors.red, width: double.infinity, height: 100),
-//           16.verticalSpace,
-//           const Text('QR expires in 02:30'),
-//           16.verticalSpace,
-//           const Divider(),
-//           Row(
-//             children: [
-//               const Text('Confirmed Employees'),
-//               const Spacer(),
-//               IconButton(onPressed: () {}, icon: const Icon(Icons.download)),
-//             ],
-//           ),
-//           Expanded(
-//             child: ListView.separated(
-//               physics: const BouncingScrollPhysics(),
-//               separatorBuilder:
-//                   (context, index) => const Divider(color: Colors.black12),
-//               itemCount: 10,
-//               itemBuilder: (context, index) {
-//                 return const ListTile(
-//                   contentPadding: EdgeInsets.zero,
-//                   leading: CircleAvatar(backgroundColor: Colors.black),
-//                   title: Text('UserName'),
-//                   subtitle: Text('Checked in 09:23'),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ).horizontalPadding(16),
-//     );
-
-
-
-
-
-///-----------------No Shifts Yet
-
-// Column(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         const Icon(Icons.error_outline),
-//         const Text('No Active Shifts Yet'),
-//         24.verticalSpace,
-//         SizedBox(
-//           width: double.infinity,
-//           height: 50,
-//           child: FilledButton(
-//             onPressed: () {
-//               showDialog(
-//                 context: context,
-//                 builder: (context) => const StartShiftWindow(),
-//               );
-//             },
-//             style: FilledButton.styleFrom(
-//               shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(8),
-//               ),
-//             ),
-//             child: const Text('Start Shift'),
-//           ),
-//         ),
-//       ],
-//     ).horizontalPadding(16);

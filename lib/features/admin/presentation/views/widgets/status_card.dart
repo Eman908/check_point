@@ -14,6 +14,7 @@ class StatusCard extends StatelessWidget {
       ),
       child: Row(
         spacing: 4,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 4,

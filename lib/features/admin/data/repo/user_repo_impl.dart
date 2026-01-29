@@ -98,6 +98,34 @@ class UserRepoImpl implements UserRepo {
     var response = await _firebaseAuthDataSource.startShift(shift);
     switch (response) {
       case Success<String>():
+        return Success(data: response.data);
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<String>> updateShiftQrCode(
+    String qrCode,
+    String shiftId,
+  ) async {
+    var response = await _firebaseAuthDataSource.updateShiftQrCode(
+      qrCode,
+      shiftId,
+    );
+    switch (response) {
+      case Success<String>():
+        return Success();
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<String>> endShift(String shiftId) async {
+    var response = await _firebaseAuthDataSource.endShiftNow(shiftId);
+    switch (response) {
+      case Success<String>():
         return Success();
       case Failure<String>():
         return Failure(message: response.message);

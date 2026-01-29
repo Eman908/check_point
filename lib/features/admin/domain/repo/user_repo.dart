@@ -14,5 +14,8 @@ abstract interface class UserRepo {
   Future<Results<String>> addStaff({required String email});
   Future<Results<Stream<QuerySnapshot<UserModel>>>> getStaffList();
   Future<Results<String>> startShift(ShiftModel shift);
+  Future<Results<String>> updateShiftQrCode(String qrCode, String shiftId);
+  Future<Results<String>> endShift(String shiftId);
+
   Future<Results<Stream<QuerySnapshot<ShiftModel>>>> getShift();
 }

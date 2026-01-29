@@ -84,7 +84,26 @@ class FirebaseUserDataSourceImpl implements FirebaseUserDataSource {
   @override
   Future<Results<String>> startShift(ShiftModel shift) async {
     return safeCall(() async {
-      await _shiftsService.setShift(shift);
+      var response = await _shiftsService.setShift(shift);
+      return Success(data: response);
+    });
+  }
+
+  @override
+  Future<Results<String>> updateShiftQrCode(
+    String qrCode,
+    String shiftId,
+  ) async {
+    return safeCall(() async {
+      await _shiftsService.updateShiftQr(qrCode, shiftId);
+      return Success(data: 'Success');
+    });
+  }
+
+  @override
+  Future<Results<String>> endShiftNow(String shiftId) async {
+    return safeCall(() async {
+      await _shiftsService.endShift(shiftId);
       return Success(data: 'Success');
     });
   }

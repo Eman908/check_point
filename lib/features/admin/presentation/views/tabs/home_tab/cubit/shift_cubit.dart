@@ -1,31 +1,47 @@
-import 'dart:async';
-
 import 'package:check_point/core/base/base_cubit.dart';
 import 'package:check_point/core/base/base_state.dart';
 import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/models/shift_model.dart';
+import 'package:check_point/core/utils/constants.dart';
 import 'package:check_point/features/admin/domain/repo/user_repo.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:async';
 
 @injectable
 class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
   ShiftCubit() : super(ShiftState());
   final UserRepo _userRepo = getIt<UserRepo>();
+  final SharedPreferences _preferences = getIt<SharedPreferences>();
   Timer? _qrTimer;
 
   String _generateQr() => const Uuid().v4();
 
-  void _startQrTimer() {
+  void _startQrTimer(String shiftId) {
     _qrTimer?.cancel();
 
-    _qrTimer = Timer.periodic(const Duration(minutes: 3), (_) {
-      safeEmit(state.copyWith(qrCode: _generateQr()));
+    final initialQr = _generateQr();
+    safeEmit(state.copyWith(qrCode: initialQr));
+
+    _userRepo.updateShiftQrCode(initialQr, shiftId);
+
+    _qrTimer = Timer.periodic(const Duration(hours: 15), (_) async {
+      final newQr = _generateQr();
+
+      safeEmit(state.copyWith(qrCode: newQr));
+
+      await _userRepo.updateShiftQrCode(newQr, shiftId);
     });
+  }
+
+  void stopQrTimer() {
+    _qrTimer?.cancel();
+    _qrTimer = null;
   }
 
   @override
@@ -46,23 +62,38 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
       case EndTimeUpdate():
         _endTime(action.time);
       case QrCodeUpdate():
-        _startShift();
+        _updateQrCode();
+      case StopShift():
+        _stopShift();
+      case EndShift():
+        _endShift();
     }
   }
 
-  void _startShift() {
-    final qr = _generateQr();
-    _startQrTimer();
-    safeEmit(state.copyWith(qrCode: qr));
+  _endShift() async {
+    _preferences.get(Constants.shiftId);
+    if (state.shiftId == null) return;
+    await _userRepo.endShift(state.shiftId!);
+    _stopShift();
+    _preferences.remove(Constants.shiftId);
   }
 
-  _startTime(TimeOfDay? time) {
+  void _updateQrCode() {
+    final qr = _generateQr();
+    safeEmit(state.copyWith(qrCode: qr));
+
+    if (state.shiftId != null) {
+      _userRepo.updateShiftQrCode(qr, state.shiftId!);
+    }
+  }
+
+  void _startTime(TimeOfDay? time) {
     if (time != null) {
       safeEmit(state.copyWith(startTime: time));
     }
   }
 
-  _endTime(TimeOfDay? time) {
+  void _endTime(TimeOfDay? time) {
     if (time != null) {
       safeEmit(state.copyWith(endTime: time));
     }
@@ -90,7 +121,14 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
     var response = await _userRepo.startShift(shift);
     switch (response) {
       case Success<String>():
-        safeEmit(state.copyWith(createShift: const BaseStatus.success()));
+        final shiftId = response.data ?? '';
+        safeEmit(state.copyWith(shiftId: shiftId));
+        _startQrTimer(shiftId);
+        _preferences.setString(Constants.shiftId, shiftId);
+        safeEmit(
+          state.copyWith(createShift: BaseStatus.success(data: response.data)),
+        );
+
       case Failure<String>():
         safeEmit(
           state.copyWith(
@@ -98,5 +136,10 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
           ),
         );
     }
+  }
+
+  Future<void> _stopShift() async {
+    stopQrTimer();
+    safeEmit(state.copyWith(shiftId: null, qrCode: null));
   }
 }

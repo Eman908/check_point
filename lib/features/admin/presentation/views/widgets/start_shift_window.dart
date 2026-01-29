@@ -6,6 +6,7 @@ import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubi
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class StartShiftWindow extends StatelessWidget {
@@ -118,6 +119,7 @@ class StartShiftWindow extends StatelessWidget {
                   createdAt: DateTime.now(),
                 );
                 context.read<ShiftCubit>().doAction(AddShift(shiftModel));
+                context.pop();
               },
               style: FilledButton.styleFrom(
                 shape: RoundedRectangleBorder(

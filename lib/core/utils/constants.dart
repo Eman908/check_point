@@ -7,4 +7,5 @@ abstract class Constants {
   static const String userName = 'Name';
   static const String userEmail = 'Email';
   static const String userId = 'Id';
+  static const String shiftId = 'shiftId';
 }
