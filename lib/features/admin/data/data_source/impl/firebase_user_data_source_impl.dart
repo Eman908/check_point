@@ -1,6 +1,7 @@
 import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/error/safe_call.dart';
+import 'package:check_point/core/firebase/attendance_service.dart';
 import 'package:check_point/core/firebase/auth_service.dart';
 import 'package:check_point/core/firebase/shifts_service.dart';
 import 'package:check_point/core/firebase/users_service.dart';
@@ -15,6 +16,7 @@ class FirebaseUserDataSourceImpl implements FirebaseUserDataSource {
   final UsersService _userService = getIt();
   final AuthService _authService = getIt();
   final ShiftsService _shiftsService = getIt();
+  final AttendanceService _attendanceService = getIt();
 
   @override
   Future<Results<String>> updateUserName(String name) async {
@@ -105,6 +107,14 @@ class FirebaseUserDataSourceImpl implements FirebaseUserDataSource {
     return safeCall(() async {
       await _shiftsService.endShift(shiftId);
       return Success(data: 'Success');
+    });
+  }
+
+  @override
+  Future<Results<List<UserModel>>> getAttendance() async {
+    return safeCall(() async {
+      var response = await _attendanceService.getAttendance();
+      return Success(data: response);
     });
   }
 }

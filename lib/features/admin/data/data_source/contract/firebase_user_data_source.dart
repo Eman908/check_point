@@ -22,4 +22,5 @@ abstract interface class FirebaseUserDataSource {
   Future<Results<String>> updateShiftQrCode(String qrCode, String shiftId);
   Future<Results<String>> endShiftNow(String shiftId);
   Future<Results<Stream<QuerySnapshot<ShiftModel>>>> getShift();
+  Future<Results<List<UserModel>>> getAttendance();
 }

@@ -131,4 +131,15 @@ class UserRepoImpl implements UserRepo {
         return Failure(message: response.message);
     }
   }
+
+  @override
+  Future<Results<List<UserModel>>> getAttendance() async {
+    var response = await _firebaseAuthDataSource.getAttendance();
+    switch (response) {
+      case Success<List<UserModel>>():
+        return Success(data: response.data);
+      case Failure<List<UserModel>>():
+        return Failure(message: response.message);
+    }
+  }
 }

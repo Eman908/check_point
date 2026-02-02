@@ -3,6 +3,7 @@ import 'package:check_point/core/base/base_state.dart';
 import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/models/shift_model.dart';
+import 'package:check_point/core/models/user_model.dart';
 import 'package:check_point/core/utils/constants.dart';
 import 'package:check_point/features/admin/domain/repo/user_repo.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_state.dart';
@@ -47,6 +48,7 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
   @override
   Future<void> close() {
     _qrTimer?.cancel();
+
     return super.close();
   }
 
@@ -67,13 +69,33 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
         _stopShift();
       case EndShift():
         _endShift();
+      case GetAttendance():
+        _getAttendance();
+    }
+  }
+
+  Future<void> _getAttendance() async {
+    var response = await _userRepo.getAttendance();
+    switch (response) {
+      case Success<List<UserModel>>():
+        safeEmit(
+          state.copyWith(
+            getAttendance: BaseStatus.success(data: response.data),
+          ),
+        );
+      case Failure<List<UserModel>>():
+        safeEmit(
+          state.copyWith(
+            getAttendance: BaseStatus.failure(message: response.message),
+          ),
+        );
     }
   }
 
   _endShift() async {
-    _preferences.get(Constants.shiftId);
-    if (state.shiftId == null) return;
-    await _userRepo.endShift(state.shiftId!);
+    final String shiftIdd = _preferences.getString(Constants.shiftId) ?? '';
+    if (shiftIdd.isEmpty) return;
+    await _userRepo.endShift(shiftIdd);
     _stopShift();
     _preferences.remove(Constants.shiftId);
   }

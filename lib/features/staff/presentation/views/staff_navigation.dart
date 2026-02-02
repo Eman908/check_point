@@ -1,6 +1,9 @@
+import 'package:check_point/core/di/di.dart';
+import 'package:check_point/features/staff/presentation/views/tabs/staff_home_tab/cubit/attendance_cubit.dart';
 import 'package:check_point/features/staff/presentation/views/tabs/staff_home_tab/staff_home_tab.dart';
 import 'package:check_point/features/staff/presentation/views/tabs/staff_profile_tab/staff_profile_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffNavigation extends StatefulWidget {
   const StaffNavigation({super.key});
@@ -11,7 +14,13 @@ class StaffNavigation extends StatefulWidget {
 
 class _StaffNavigationState extends State<StaffNavigation> {
   ValueNotifier<int> indexChangeNotifier = ValueNotifier(0);
-  List<Widget> pages = const [StuffHomeTab(), StuffProfileTab()];
+  List<Widget> pages = [
+    BlocProvider.value(
+      value: getIt<AttendanceCubit>(),
+      child: const StuffHomeTab(),
+    ),
+    const StuffProfileTab(),
+  ];
 
   @override
   Widget build(BuildContext context) {

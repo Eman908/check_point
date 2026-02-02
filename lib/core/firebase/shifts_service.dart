@@ -1,4 +1,3 @@
-import 'package:check_point/core/firebase/auth_service.dart';
 import 'package:check_point/core/models/shift_model.dart';
 import 'package:check_point/core/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,10 +36,9 @@ class ShiftsService {
   }
 
   Stream<QuerySnapshot<ShiftModel>> getShift() {
-    var collection = createShiftsCollection().where(
-      'managerId',
-      isEqualTo: AuthService.firebaseAuth.currentUser!.uid,
-    );
+    var collection = createShiftsCollection()
+        .where('isActive', isEqualTo: true)
+        .limit(1);
     var data = collection.snapshots();
     return data;
   }

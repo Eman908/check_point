@@ -6,6 +6,7 @@ import 'package:check_point/features/auth/presentation/views/forget_password_vie
 import 'package:check_point/features/auth/presentation/views/login_view.dart';
 import 'package:check_point/features/splash/presentation/view/splash_view.dart';
 import 'package:check_point/features/staff/presentation/views/staff_navigation.dart';
+import 'package:check_point/features/staff/presentation/views/tabs/staff_home_tab/qr_scanner_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,7 @@ abstract class AppRoutes {
   static const kAdminView = '/adminView';
   static const kStaffHomeView = '/staffHomeView';
   static const kChangePasswordView = '/changePasswordView';
+  static const kQrScannerView = '/qrScannerView';
 
   static final router = GoRouter(
     initialLocation: kSplashView,
@@ -59,6 +61,10 @@ abstract class AppRoutes {
       GoRoute(
         path: kAdminView,
         builder: (context, state) => const AdminNavigation(),
+      ),
+      GoRoute(
+        path: kQrScannerView,
+        builder: (context, state) => const QRScannerView(),
       ),
       GoRoute(
         path: kStaffHomeView,

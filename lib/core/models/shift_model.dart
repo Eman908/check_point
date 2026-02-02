@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ShiftModel {
   final DateTime startTime;
   final DateTime endTime;
@@ -17,8 +19,8 @@ class ShiftModel {
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) {
     return ShiftModel(
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
+      startTime: (json['startTime'] as Timestamp).toDate(),
+      endTime: (json['endTime'] as Timestamp).toDate(),
       qrCode: json['qrCode'],
       managerId: json['managerId'],
       isActive: json['isActive'],
@@ -27,8 +29,8 @@ class ShiftModel {
   }
 
   Map<String, dynamic> toJson() => {
-    'startTime': startTime.toIso8601String(),
-    'endTime': endTime.toIso8601String(),
+    'startTime': Timestamp.fromDate(startTime),
+    'endTime': Timestamp.fromDate(endTime),
     'qrCode': qrCode,
     'managerId': managerId,
     'isActive': isActive,

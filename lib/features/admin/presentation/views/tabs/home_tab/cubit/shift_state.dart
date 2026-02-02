@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class ShiftState {
   BaseStatus createShift;
   BaseStatus getShift;
+  BaseStatus getAttendance;
   TimeOfDay? startTime;
   TimeOfDay? endTime;
   final String? qrCode;
@@ -13,6 +14,7 @@ class ShiftState {
   ShiftState({
     this.createShift = const BaseStatus.initial(),
     this.getShift = const BaseStatus.initial(),
+    this.getAttendance = const BaseStatus.initial(),
     this.startTime,
     this.endTime,
     this.qrCode,
@@ -21,7 +23,7 @@ class ShiftState {
 
   ShiftState copyWith({
     BaseStatus? createShift,
-    BaseStatus? endShift,
+    BaseStatus? getAttendance,
     BaseStatus? getShift,
     TimeOfDay? startTime,
     TimeOfDay? endTime,
@@ -32,6 +34,7 @@ class ShiftState {
       createShift: createShift ?? this.createShift,
       getShift: getShift ?? this.getShift,
       startTime: startTime ?? this.startTime,
+      getAttendance: getAttendance ?? this.getAttendance,
       endTime: endTime ?? this.endTime,
       qrCode: qrCode ?? this.qrCode,
       shiftId: shiftId ?? this.shiftId,
@@ -63,3 +66,5 @@ final class QrCodeUpdate extends ShiftActions {}
 final class StopShift extends ShiftActions {}
 
 final class EndShift extends ShiftActions {}
+
+final class GetAttendance extends ShiftActions {}

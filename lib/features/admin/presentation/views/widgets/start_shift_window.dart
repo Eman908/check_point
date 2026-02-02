@@ -14,123 +14,157 @@ class StartShiftWindow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<ShiftCubit>();
+    return BlocBuilder<ShiftCubit, ShiftState>(
+      builder: (context, state) {
+        var cubit = context.read<ShiftCubit>();
 
-    return AlertDialog(
-      insetPadding: EdgeInsets.zero,
-      title: const Text('Start Shift'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+        return AlertDialog(
+          insetPadding: EdgeInsets.zero,
+          title: const Text('Start Shift'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Start Time'),
-              const Spacer(),
-              TextButton(
-                onPressed: () async {
-                  TimeOfDay? time = await showTimePicker(
-                    context: context,
-                    initialTime: cubit.state.startTime ?? TimeOfDay.now(),
-                  );
-                  cubit.doAction(StartTimeUpdate(time));
-                },
-                child:
-                    cubit.state.startTime == null
-                        ? const Icon(
-                          Icons.watch_later_outlined,
-                          color: AppColors.kRed,
-                        )
-                        : Text(
-                          DateFormat('h:mm a').format(
-                            DateTime(
-                              0,
-                              0,
-                              0,
-                              cubit.state.startTime!.hour,
-                              cubit.state.startTime!.minute,
+              Row(
+                children: [
+                  const Text('Start Time'),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () async {
+                      TimeOfDay? time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (time != null) {
+                        cubit.doAction(StartTimeUpdate(time));
+                      }
+                    },
+                    child:
+                        cubit.state.startTime == null
+                            ? const Icon(
+                              Icons.watch_later_outlined,
+                              color: AppColors.kRed,
+                            )
+                            : Text(
+                              DateFormat('h:mm a').format(
+                                DateTime(
+                                  0,
+                                  0,
+                                  0,
+                                  cubit.state.startTime!.hour,
+                                  cubit.state.startTime!.minute,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const Divider(),
-          Row(
-            children: [
-              const Text('End Time'),
-              const Spacer(),
-              TextButton(
-                onPressed: () async {
-                  TimeOfDay? time = await showTimePicker(
-                    context: context,
-                    initialTime: cubit.state.endTime ?? TimeOfDay.now(),
-                  );
-                  cubit.doAction(EndTimeUpdate(time));
-                },
-                style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                child:
-                    cubit.state.endTime == null
-                        ? const Icon(
-                          Icons.watch_later_outlined,
-                          color: AppColors.kRed,
-                        )
-                        : Text(
-                          DateFormat('h:mm a').format(
-                            DateTime(
-                              0,
-                              0,
-                              0,
-                              cubit.state.endTime!.hour,
-                              cubit.state.endTime!.minute,
+              const Divider(),
+              Row(
+                children: [
+                  const Text('End Time'),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () async {
+                      TimeOfDay? time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (time != null) {
+                        cubit.doAction(EndTimeUpdate(time));
+                      }
+                    },
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                    child:
+                        cubit.state.endTime == null
+                            ? const Icon(
+                              Icons.watch_later_outlined,
+                              color: AppColors.kRed,
+                            )
+                            : Text(
+                              DateFormat('h:mm a').format(
+                                DateTime(
+                                  0,
+                                  0,
+                                  0,
+                                  cubit.state.endTime!.hour,
+                                  cubit.state.endTime!.minute,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const Divider(),
+              const Divider(),
 
-          const Text('QR refresh every 3:00 minutes'),
-          8.verticalSpace,
-          SizedBox(
-            width: double.infinity,
+              const Text('QR refresh every 3:00 minutes'),
+              8.verticalSpace,
+              SizedBox(
+                width: double.infinity,
 
-            child: FilledButton(
-              onPressed: () {
-                cubit.doAction(QrCodeUpdate());
-                ShiftModel shiftModel = ShiftModel(
-                  startTime: DateTime(
-                    0,
-                    0,
-                    0,
-                    cubit.state.startTime?.hour ?? 0,
-                    cubit.state.startTime?.minute ?? 0,
+                child: FilledButton(
+                  onPressed: () {
+                    if (cubit.state.startTime == null ||
+                        cubit.state.endTime == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please select both start and end times',
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    cubit.doAction(QrCodeUpdate());
+
+                    // ✅ CORRECT: Use current date with selected times
+                    final now = DateTime.now();
+
+                    final startDateTime = DateTime(
+                      now.year, // ✅ Current year
+                      now.month, // ✅ Current month
+                      now.day, // ✅ Current day
+                      cubit.state.startTime!.hour,
+                      cubit.state.startTime!.minute,
+                    );
+
+                    DateTime endDateTime = DateTime(
+                      now.year,
+                      now.month,
+                      now.day,
+                      cubit.state.endTime!.hour,
+                      cubit.state.endTime!.minute,
+                    );
+
+                    if (endDateTime.isBefore(startDateTime)) {
+                      endDateTime = endDateTime.add(const Duration(days: 1));
+                    }
+
+                    ShiftModel shiftModel = ShiftModel(
+                      startTime: startDateTime,
+                      endTime: endDateTime,
+                      qrCode: cubit.state.qrCode ?? '',
+                      isActive: true,
+                      managerId: FirebaseAuth.instance.currentUser?.uid ?? '',
+                      createdAt: DateTime.now(),
+                    );
+
+                    context.read<ShiftCubit>().doAction(AddShift(shiftModel));
+                    context.pop();
+                  },
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                  endTime: DateTime(
-                    0,
-                    0,
-                    0,
-                    cubit.state.endTime?.hour ?? 0,
-                    cubit.state.endTime?.minute ?? 0,
-                  ),
-                  qrCode: cubit.state.qrCode ?? '',
-                  isActive: true,
-                  managerId: FirebaseAuth.instance.currentUser?.uid ?? '',
-                  createdAt: DateTime.now(),
-                );
-                context.read<ShiftCubit>().doAction(AddShift(shiftModel));
-                context.pop();
-              },
-              style: FilledButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  child: const Text('Start Shift'),
                 ),
               ),
-              child: const Text('Start Shift'),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -32,6 +32,15 @@ import '../../features/auth/data/data_source/impl/firebase_auth_data_source_impl
 import '../../features/auth/data/repo/auth_repo_impl.dart' as _i984;
 import '../../features/auth/domain/repo/auth_repo.dart' as _i170;
 import '../../features/auth/presentation/cubit/auth_cubit.dart' as _i117;
+import '../../features/staff/data/data_source/contract/attendance_data_source.dart'
+    as _i692;
+import '../../features/staff/data/data_source/impl/attendance_data_source_impl.dart'
+    as _i712;
+import '../../features/staff/data/repo/attendance_repo_impl.dart' as _i1061;
+import '../../features/staff/domain/repo/attendance_repo.dart' as _i915;
+import '../../features/staff/presentation/views/tabs/staff_home_tab/cubit/attendance_cubit.dart'
+    as _i202;
+import '../firebase/attendance_service.dart' as _i1026;
 import '../firebase/auth_service.dart' as _i35;
 import '../firebase/shifts_service.dart' as _i736;
 import '../firebase/users_service.dart' as _i1038;
@@ -49,6 +58,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferenceModule.preferences(),
       preResolve: true,
     );
+    gh.factory<_i1026.AttendanceService>(() => _i1026.AttendanceService());
     gh.factory<_i35.AuthService>(() => _i35.AuthService());
     gh.factory<_i736.ShiftsService>(() => _i736.ShiftsService());
     gh.factory<_i1038.UsersService>(() => _i1038.UsersService());
@@ -56,6 +66,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i708.ProfileCubit>(() => _i708.ProfileCubit());
     gh.factory<_i733.StaffCubit>(() => _i733.StaffCubit());
     gh.factory<_i117.AuthCubit>(() => _i117.AuthCubit());
+    gh.factory<_i202.AttendanceCubit>(() => _i202.AttendanceCubit());
+    gh.factory<_i915.AttendanceRepo>(() => _i1061.AttendanceRepoImpl());
+    gh.factory<_i692.AttendanceDataSource>(
+      () => _i712.AttendanceDataSourceImpl(),
+    );
     gh.factory<_i161.UserRepo>(() => _i238.UserRepoImpl());
     gh.factory<_i27.FirebaseUserDataSource>(
       () => _i648.FirebaseUserDataSourceImpl(),

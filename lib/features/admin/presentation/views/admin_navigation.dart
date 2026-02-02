@@ -1,8 +1,11 @@
+import 'package:check_point/core/di/di.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/home_tab.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/profile_tab/profile_tab.dart';
+import 'package:check_point/features/admin/presentation/views/tabs/staff_tab/cubit/staff_cubit.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/staff_tab/staff_tab.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/add_staff_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminNavigation extends StatefulWidget {
   const AdminNavigation({super.key});
@@ -13,7 +16,11 @@ class AdminNavigation extends StatefulWidget {
 
 class _AdminNavigationState extends State<AdminNavigation> {
   ValueNotifier<int> indexChangeNotifier = ValueNotifier<int>(0);
-  List<Widget> pages = [const HomeTab(), const StaffTab(), const ProfileTab()];
+  List<Widget> pages = [
+    const HomeTab(),
+    BlocProvider.value(value: getIt<StaffCubit>(), child: const StaffTab()),
+    const ProfileTab(),
+  ];
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(

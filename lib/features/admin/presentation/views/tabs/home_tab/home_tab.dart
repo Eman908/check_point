@@ -6,6 +6,7 @@ import 'package:check_point/core/utils/scaffold_message.dart';
 import 'package:check_point/core/utils/white_space_extension.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_cubit.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_state.dart';
+import 'package:check_point/features/admin/presentation/views/widgets/staff_card.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/start_shift_window.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/status_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,20 +24,42 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  Timer? _shiftTimer;
   @override
   void initState() {
     super.initState();
     context.read<ShiftCubit>().doAction(GetShift());
+    context.read<ShiftCubit>().doAction(GetAttendance());
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _shiftTimer?.cancel();
     super.dispose();
+  }
+
+  void _startShiftTimer(ShiftModel shiftData, ShiftCubit cubit) {
+    _shiftTimer?.cancel();
+
+    final endTime = shiftData.endTime;
+
+    if (DateTime.now().isAfter(endTime)) {
+      cubit.doAction(EndShift());
+      return;
+    }
+
+    _shiftTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      if (DateTime.now().isAfter(endTime)) {
+        timer.cancel();
+        cubit.doAction(EndShift());
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<ShiftCubit>();
+
     return BlocBuilder<ShiftCubit, ShiftState>(
       builder: (context, state) {
         if (state.createShift.status == Status.failure) {
@@ -90,11 +113,9 @@ class _HomeTabState extends State<HomeTab> {
                 ],
               ).horizontalPadding(16);
             }
-
             final shiftData = snapshot.data!.docs.first.data();
-
             final qrCode = state.qrCode ?? shiftData.qrCode;
-
+            _startShiftTimer(shiftData, cubit);
             return SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -129,8 +150,6 @@ class _HomeTabState extends State<HomeTab> {
                     height: 50,
                     child: FilledButton(
                       onPressed: () {
-                        //context.read<ShiftCubit>().doAction(EndShift());
-                        final cubit = context.read<ShiftCubit>();
                         showDialog(
                           context: context,
                           builder:
@@ -166,6 +185,19 @@ class _HomeTabState extends State<HomeTab> {
                       child: const Text('End Shift Now'),
                     ),
                   ),
+                  8.verticalSpace,
+
+                  state.getAttendance.data == null
+                      ? const Text('No Attendance')
+                      : Expanded(
+                        child: ListView.builder(
+                          itemCount: state.getAttendance.data.length,
+                          itemBuilder: (context, index) {
+                            final shift = state.getAttendance.data;
+                            return StaffCard(user: shift[index]);
+                          },
+                        ),
+                      ),
                 ],
               ).horizontalPadding(16),
             );

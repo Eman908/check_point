@@ -4,7 +4,10 @@
 <dict>
   <key>CFBundleDevelopmentRegion</key>
   <string>en</string>
-  <key>CFBundleExecutable</key>
+  <key>NSCameraUsageDescription</key>
+  <string>This app needs camera access to scan QR codes</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>This app needs photos access to get QR code from photo library</string>  <key>CFBundleExecutable</key>
   <string>App</string>
   <key>CFBundleIdentifier</key>
   <string>io.flutter.flutter.app</string>
