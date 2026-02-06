@@ -28,7 +28,7 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
 
     _userRepo.updateShiftQrCode(initialQr, shiftId);
 
-    _qrTimer = Timer.periodic(const Duration(hours: 15), (_) async {
+    _qrTimer = Timer.periodic(const Duration(minutes: 3), (_) async {
       final newQr = _generateQr();
 
       safeEmit(state.copyWith(qrCode: newQr));
