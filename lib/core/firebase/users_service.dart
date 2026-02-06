@@ -5,11 +5,13 @@ import 'package:check_point/core/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class UsersService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   AuthService authService = getIt<AuthService>();
+  final SharedPreferences _preferences = getIt();
   CollectionReference<UserModel> getUserCollection() {
     return firestore
         .collection(Constants.userCollection)
@@ -80,7 +82,7 @@ class UsersService {
   }
 
   Future<UserModel?> getUserData() async {
-    String userId = AuthService.firebaseAuth.currentUser!.uid;
+    String userId = _preferences.getString(Constants.userId) ?? '';
     var userCollection = getUserCollection().doc(userId);
     var data = await userCollection.get();
     return data.data();

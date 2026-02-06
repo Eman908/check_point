@@ -22,12 +22,6 @@ class ProfileTab extends StatelessWidget {
           children: [
             UserData(cubit: cubit),
             const Divider(),
-            8.verticalSpace,
-            const ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text("Attendance History"),
-              trailing: Icon(Icons.arrow_forward_ios),
-            ),
             ListTile(
               onTap: () {
                 context.push(AppRoutes.kChangePasswordView);
@@ -36,7 +30,6 @@ class ProfileTab extends StatelessWidget {
               title: const Text("Change Password"),
               trailing: const Icon(Icons.arrow_forward_ios),
             ),
-            8.verticalSpace,
 
             const Divider(),
             TextButton(

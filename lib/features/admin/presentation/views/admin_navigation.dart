@@ -16,47 +16,49 @@ class AdminNavigation extends StatefulWidget {
 
 class _AdminNavigationState extends State<AdminNavigation> {
   ValueNotifier<int> indexChangeNotifier = ValueNotifier<int>(0);
-  List<Widget> pages = [
-    const HomeTab(),
-    BlocProvider.value(value: getIt<StaffCubit>(), child: const StaffTab()),
-    const ProfileTab(),
-  ];
+  List<Widget> pages = [const HomeTab(), const StaffTab(), const ProfileTab()];
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: indexChangeNotifier,
-      builder: (context, value, child) {
-        return Scaffold(
-          body: pages[indexChangeNotifier.value],
-          floatingActionButton:
-              indexChangeNotifier.value == 1
-                  ? FloatingActionButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => const AddStaffWindow(),
-                      );
-                    },
-                    shape: const CircleBorder(),
-                    child: const Icon(Icons.add),
-                  )
-                  : null,
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: (value) {
-              indexChangeNotifier.value = value;
-            },
-            currentIndex: indexChangeNotifier.value,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.people), label: "Staff"),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: "Profile",
-              ),
-            ],
-          ),
-        );
-      },
+    return BlocProvider.value(
+      value: getIt<StaffCubit>(),
+      child: ValueListenableBuilder(
+        valueListenable: indexChangeNotifier,
+        builder: (context, value, child) {
+          return Scaffold(
+            body: pages[indexChangeNotifier.value],
+            floatingActionButton:
+                indexChangeNotifier.value == 1
+                    ? FloatingActionButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AddStaffWindow(),
+                        );
+                      },
+                      shape: const CircleBorder(),
+                      child: const Icon(Icons.add),
+                    )
+                    : null,
+            bottomNavigationBar: BottomNavigationBar(
+              onTap: (value) {
+                indexChangeNotifier.value = value;
+              },
+              currentIndex: indexChangeNotifier.value,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.people),
+                  label: "Staff",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: "Profile",
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

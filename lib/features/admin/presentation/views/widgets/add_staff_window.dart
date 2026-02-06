@@ -1,4 +1,5 @@
 import 'package:check_point/core/base/base_state.dart';
+import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/utils/scaffold_message.dart';
 import 'package:check_point/core/utils/validation.dart';
 import 'package:check_point/core/widgets/custom_text_field.dart';
@@ -27,58 +28,61 @@ class _AddStaffWindowState extends State<AddStaffWindow> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<StaffCubit, StaffState>(
-      listener: (context, state) {
-        if (state.staff.status == Status.success) {
-          context.pop();
-          emailController.clear();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(snackBar(message: 'Success', bgColor: Colors.green));
-        } else if (state.staff.status == Status.failure) {
-          context.pop();
-          emailController.clear();
+    return BlocProvider.value(
+      value: getIt<StaffCubit>(),
+      child: BlocConsumer<StaffCubit, StaffState>(
+        listener: (context, state) {
+          if (state.staff.status == Status.success) {
+            context.pop();
+            emailController.clear();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(snackBar(message: 'Success', bgColor: Colors.green));
+          } else if (state.staff.status == Status.failure) {
+            context.pop();
+            emailController.clear();
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            snackBar(
-              message: state.staff.message ?? 'something went wrong',
-              bgColor: Colors.red,
+            ScaffoldMessenger.of(context).showSnackBar(
+              snackBar(
+                message: state.staff.message ?? 'something went wrong',
+                bgColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return AlertDialog(
+            insetPadding: EdgeInsets.zero,
+            title: const Text('Add Staff'),
+            content: CustomTextFormField(
+              controller: emailController,
+              hintText: 'Email',
+              prefix: Icons.email,
+              validator: (value) {
+                return Validation.validateEmail(value);
+              },
+              autofillHints: const [AutofillHints.email],
             ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  emailController.clear();
+                  context.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  context.read<StaffCubit>().doAction(
+                    AddStaff(email: emailController.text),
+                  );
+                },
+                child: const Text('Add'),
+              ),
+            ],
           );
-        }
-      },
-      builder: (context, state) {
-        return AlertDialog(
-          insetPadding: EdgeInsets.zero,
-          title: const Text('Add Staff'),
-          content: CustomTextFormField(
-            controller: emailController,
-            hintText: 'Email',
-            prefix: Icons.email,
-            validator: (value) {
-              return Validation.validateEmail(value);
-            },
-            autofillHints: const [AutofillHints.email],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                emailController.clear();
-                context.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<StaffCubit>().doAction(
-                  AddStaff(email: emailController.text),
-                );
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
+        },
+      ),
     );
   }
 }

@@ -18,12 +18,6 @@ class StuffProfileTab extends StatelessWidget {
       children: [
         StaffProfileData(cubit: context.read<ProfileCubit>()),
         const Divider(),
-        8.verticalSpace,
-        const ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text("Attendance History"),
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
         ListTile(
           onTap: () {
             context.push(AppRoutes.kChangePasswordView);
@@ -32,7 +26,6 @@ class StuffProfileTab extends StatelessWidget {
           title: const Text("Change Password"),
           trailing: const Icon(Icons.arrow_forward_ios),
         ),
-        8.verticalSpace,
 
         const Divider(),
         24.verticalSpace,

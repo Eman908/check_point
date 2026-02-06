@@ -194,15 +194,34 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                   8.verticalSpace,
 
-                  state.getAttendance.data == null
+                  state.getAttendance.data == [] ||
+                          state.getAttendance.data == null
                       ? const Text('No Attendance')
                       : Expanded(
-                        child: ListView.builder(
-                          itemCount: state.getAttendance.data.length,
-                          itemBuilder: (context, index) {
-                            final shift = state.getAttendance.data;
-                            return StaffCard(user: shift[index]);
-                          },
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Text('Attendance History'),
+                                const Spacer(),
+                                InkWell(
+                                  onTap: () {},
+                                  child: const Icon(Icons.download),
+                                ),
+                              ],
+                            ),
+                            Expanded(
+                              child: ListView.separated(
+                                separatorBuilder:
+                                    (context, index) => const Divider(),
+                                itemCount: state.getAttendance.data.length,
+                                itemBuilder: (context, index) {
+                                  final shift = state.getAttendance.data;
+                                  return StaffCard(user: shift[index]);
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                 ],
