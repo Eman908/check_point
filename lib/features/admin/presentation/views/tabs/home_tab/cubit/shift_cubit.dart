@@ -4,13 +4,11 @@ import 'package:check_point/core/di/di.dart';
 import 'package:check_point/core/error/results.dart';
 import 'package:check_point/core/models/shift_model.dart';
 import 'package:check_point/core/models/user_model.dart';
-import 'package:check_point/core/utils/constants.dart';
 import 'package:check_point/features/admin/domain/repo/user_repo.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:async';
 
@@ -18,7 +16,6 @@ import 'dart:async';
 class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
   ShiftCubit() : super(ShiftState());
   final UserRepo _userRepo = getIt<UserRepo>();
-  // final SharedPreferences _preferences = getIt<SharedPreferences>();
   Timer? _qrTimer;
 
   String _generateQr() => const Uuid().v4();

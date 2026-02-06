@@ -63,7 +63,7 @@ class AttendanceService {
             .where('staffId', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
             .get();
     if (collection.docs.isEmpty) {
-      return [];
+      throw Exception('');
     }
     return collection.docs.first.data();
   }
