@@ -142,4 +142,26 @@ class UserRepoImpl implements UserRepo {
         return Failure(message: response.message);
     }
   }
+
+  @override
+  Future<Results<String>> deleteAttendance() async {
+    var response = await _firebaseAuthDataSource.deleteAttendance();
+    switch (response) {
+      case Success<String>():
+        return Success(data: response.data);
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
+
+  @override
+  Future<Results<String>> getShiftId() async {
+    var response = await _firebaseAuthDataSource.getShiftId();
+    switch (response) {
+      case Success<String>():
+        return Success(data: response.data);
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
 }

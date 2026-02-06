@@ -26,6 +26,7 @@ class _StuffHomeTabState extends State<StuffHomeTab> {
   void initState() {
     super.initState();
     context.read<ShiftCubit>().doAction(GetShift());
+    context.read<AttendanceCubit>().doAction(GetStaffAttendance());
   }
 
   @override
@@ -95,9 +96,11 @@ class _StuffHomeTabState extends State<StuffHomeTab> {
                   ).horizontalPadding(16);
                 }
 
-                if (state.attendance.status == Status.success) {
+                if (state.attendance.status == Status.success ||
+                    state.getAttendance.status == Status.success) {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Icon(
                         Icons.check_circle,
@@ -169,24 +172,24 @@ class _StuffHomeTabState extends State<StuffHomeTab> {
                             state.attendance.status == Status.loading
                                 ? null
                                 : () async {
-                                  cubitA.doAction(
-                                    CheckAttendance(
-                                      '70c589d0-79a3-4aee-98db-8e2648c66d5c',
-                                    ),
-                                  );
-                                  // final result = await Navigator.of(
-                                  //   context,
-                                  // ).push(
-                                  //   MaterialPageRoute(
-                                  //     builder:
-                                  //         (context) => const QRScannerView(),
+                                  // cubitA.doAction(
+                                  //   CheckAttendance(
+                                  //     "ca96639a-6534-46cf-b387-2b68d04ac13d",
                                   //   ),
                                   // );
-                                  // if (result != null && mounted) {
-                                  //   cubitA.doAction(
-                                  //     CheckAttendance(result.toString()),
-                                  //   );
-                                  // }
+                                  final result = await Navigator.of(
+                                    context,
+                                  ).push(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => const QRScannerView(),
+                                    ),
+                                  );
+                                  if (result != null && mounted) {
+                                    cubitA.doAction(
+                                      CheckAttendance(result.toString()),
+                                    );
+                                  }
                                 },
                         style: FilledButton.styleFrom(
                           shape: RoundedRectangleBorder(

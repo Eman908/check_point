@@ -38,6 +38,36 @@ class AttendanceService {
     }
   }
 
+  Future<void> deleteAttendance() async {
+    final firestore = FirebaseFirestore.instance;
+
+    var collection = collectionReferenceAttendance().where(
+      'managerId',
+      isEqualTo: FirebaseAuth.instance.currentUser?.uid,
+    );
+
+    var snapshot = await collection.get();
+
+    WriteBatch batch = firestore.batch();
+
+    for (var doc in snapshot.docs) {
+      batch.delete(doc.reference);
+    }
+
+    await batch.commit();
+  }
+
+  Future getUserAttendance() async {
+    var collection =
+        await collectionReferenceAttendance()
+            .where('staffId', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+            .get();
+    if (collection.docs.isEmpty) {
+      return [];
+    }
+    return collection.docs.first.data();
+  }
+
   Future<List<UserModel>> getAttendance() async {
     var collection =
         await collectionReferenceAttendance()

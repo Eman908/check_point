@@ -17,5 +17,7 @@ abstract interface class UserRepo {
   Future<Results<String>> updateShiftQrCode(String qrCode, String shiftId);
   Future<Results<String>> endShift(String shiftId);
   Future<Results<List<UserModel>>> getAttendance();
+  Future<Results<String>> deleteAttendance();
   Future<Results<Stream<QuerySnapshot<ShiftModel>>>> getShift();
+  Future<Results<String>> getShiftId();
 }

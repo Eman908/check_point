@@ -19,4 +19,15 @@ class AttendanceRepoImpl implements AttendanceRepo {
         return Failure(message: response.message);
     }
   }
+
+  @override
+  Future<Results<String>> getAttendance() async {
+    var response = await _attendanceDataSource.getAttendance();
+    switch (response) {
+      case Success<String>():
+        return Success();
+      case Failure<String>():
+        return Failure(message: response.message);
+    }
+  }
 }

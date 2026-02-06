@@ -15,6 +15,22 @@ class AttendanceCubit extends BaseCubit<AttendanceState, AttendanceActions> {
     switch (action) {
       case CheckAttendance():
         _checkAttendance(action.qrCode);
+      case GetStaffAttendance():
+        _getAttendance();
+    }
+  }
+
+  Future<void> _getAttendance() async {
+    var response = await _attendanceRepo.getAttendance();
+    switch (response) {
+      case Success<String>():
+        safeEmit(state.copyWith(getAttendance: const BaseStatus.success()));
+      case Failure<String>():
+        safeEmit(
+          state.copyWith(
+            getAttendance: BaseStatus.failure(message: response.message),
+          ),
+        );
     }
   }
 

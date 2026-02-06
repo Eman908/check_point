@@ -117,4 +117,20 @@ class FirebaseUserDataSourceImpl implements FirebaseUserDataSource {
       return Success(data: response);
     });
   }
+
+  @override
+  Future<Results<String>> deleteAttendance() async {
+    return safeCall(() async {
+      await _attendanceService.deleteAttendance();
+      return Success(data: 'Success');
+    });
+  }
+
+  @override
+  Future<Results<String>> getShiftId() async {
+    return safeCall(() async {
+      var response = await _shiftsService.getShiftId();
+      return Success(data: response);
+    });
+  }
 }

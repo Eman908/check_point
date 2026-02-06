@@ -18,7 +18,7 @@ import 'dart:async';
 class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
   ShiftCubit() : super(ShiftState());
   final UserRepo _userRepo = getIt<UserRepo>();
-  final SharedPreferences _preferences = getIt<SharedPreferences>();
+  // final SharedPreferences _preferences = getIt<SharedPreferences>();
   Timer? _qrTimer;
 
   String _generateQr() => const Uuid().v4();
@@ -93,11 +93,17 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
   }
 
   _endShift() async {
-    final String shiftIdd = _preferences.getString(Constants.shiftId) ?? '';
-    if (shiftIdd.isEmpty) return;
-    await _userRepo.endShift(shiftIdd);
-    _stopShift();
-    _preferences.remove(Constants.shiftId);
+    var shiftIdd = await _userRepo.getShiftId();
+    switch (shiftIdd) {
+      case Success<String>():
+        await _userRepo.endShift(shiftIdd.data ?? '');
+        await _userRepo.deleteAttendance();
+        _stopShift();
+        print(shiftIdd.data);
+
+      case Failure<String>():
+        return;
+    }
   }
 
   void _updateQrCode() {
@@ -146,7 +152,7 @@ class ShiftCubit extends BaseCubit<ShiftState, ShiftActions> {
         final shiftId = response.data ?? '';
         safeEmit(state.copyWith(shiftId: shiftId));
         _startQrTimer(shiftId);
-        _preferences.setString(Constants.shiftId, shiftId);
+        // _preferences.setString(Constants.shiftId, shiftId);
         safeEmit(
           state.copyWith(createShift: BaseStatus.success(data: response.data)),
         );

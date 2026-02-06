@@ -15,4 +15,12 @@ class AttendanceDataSourceImpl implements AttendanceDataSource {
       return Success();
     });
   }
+
+  @override
+  Future<Results<String>> getAttendance() async {
+    return safeCall(() async {
+      await _attendanceService.getUserAttendance();
+      return Success();
+    });
+  }
 }

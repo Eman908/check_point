@@ -44,16 +44,23 @@ class _HomeTabState extends State<HomeTab> {
     final endTime = shiftData.endTime;
 
     if (DateTime.now().isAfter(endTime)) {
+      debugPrint('⚠️ Shift already ended on app open');
+
       cubit.doAction(EndShift());
       return;
     }
 
     _shiftTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      debugPrint('🕐 Timer tick at ${DateTime.now()}');
+
       if (DateTime.now().isAfter(endTime)) {
+        debugPrint('✅ Shift ended via timer');
         timer.cancel();
         cubit.doAction(EndShift());
       }
     });
+
+    debugPrint('✅ Timer started, will check every minute until $endTime');
   }
 
   @override
