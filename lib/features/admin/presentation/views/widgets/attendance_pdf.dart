@@ -43,7 +43,7 @@ class AttendancePdf {
           return [user.userName, user.email];
         }).toList();
 
-    return pw.Table.fromTextArray(
+    return pw.TableHelper.fromTextArray(
       headers: headers,
       data: data,
       border: pw.TableBorder.all(),
