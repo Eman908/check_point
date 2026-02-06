@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:check_point/core/base/base_state.dart';
 import 'package:check_point/core/models/shift_model.dart';
 import 'package:check_point/core/utils/padding_extension.dart';
@@ -6,6 +7,7 @@ import 'package:check_point/core/utils/scaffold_message.dart';
 import 'package:check_point/core/utils/white_space_extension.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_cubit.dart';
 import 'package:check_point/features/admin/presentation/views/tabs/home_tab/cubit/shift_state.dart';
+import 'package:check_point/features/admin/presentation/views/widgets/attendance_pdf.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/staff_card.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/start_shift_window.dart';
 import 'package:check_point/features/admin/presentation/views/widgets/status_card.dart';
@@ -14,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class HomeTab extends StatefulWidget {
@@ -205,7 +208,13 @@ class _HomeTabState extends State<HomeTab> {
                                 const Text('Attendance History'),
                                 const Spacer(),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    final shift = state.getAttendance.data;
+                                    final file = await AttendancePdf.generate(
+                                      users: shift,
+                                    );
+                                    OpenFilex.open(file.path);
+                                  },
                                   child: const Icon(Icons.download),
                                 ),
                               ],
