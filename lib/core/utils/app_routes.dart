@@ -21,29 +21,32 @@ abstract class AppRoutes {
 
   static final router = GoRouter(
     initialLocation: kSplashView,
-
     redirect: (context, state) {
+      final currentPath = state.uri.toString();
+
+      if (currentPath == kSplashView) {
+        return null;
+      }
+
       final prefs = getIt<SharedPreferences>();
       final token = prefs.getString(Constants.userToken);
       final role = prefs.getString(Constants.userRole);
-
-      final isLoggingIn = state.uri.toString() == kLoginView;
+      final isLoggingIn = currentPath == kLoginView;
 
       if (token == null || token.isEmpty) {
         return isLoggingIn ? null : kLoginView;
       }
 
       if (role == 'manager') {
-        return state.uri.toString() == kAdminView ? null : kAdminView;
+        return currentPath == kAdminView ? null : kAdminView;
       }
 
       if (role == 'staff') {
-        return state.uri.toString() == kStaffHomeView ? null : kStaffHomeView;
+        return currentPath == kStaffHomeView ? null : kStaffHomeView;
       }
 
       return null;
     },
-
     routes: [
       GoRoute(
         path: kSplashView,
