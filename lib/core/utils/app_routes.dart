@@ -24,17 +24,18 @@ abstract class AppRoutes {
     redirect: (context, state) {
       final currentPath = state.uri.toString();
 
-      if (currentPath == kSplashView) {
+      final publicRoutes = [kSplashView, kLoginView, kForgetPasswordView];
+
+      if (publicRoutes.contains(currentPath)) {
         return null;
       }
 
       final prefs = getIt<SharedPreferences>();
       final token = prefs.getString(Constants.userToken);
       final role = prefs.getString(Constants.userRole);
-      final isLoggingIn = currentPath == kLoginView;
 
       if (token == null || token.isEmpty) {
-        return isLoggingIn ? null : kLoginView;
+        return kLoginView;
       }
 
       if (role == 'manager') {
@@ -54,12 +55,12 @@ abstract class AppRoutes {
       ),
       GoRoute(path: kLoginView, builder: (context, state) => const LoginView()),
       GoRoute(
-        path: kChangePasswordView,
-        builder: (context, state) => const ChangePassword(),
-      ),
-      GoRoute(
         path: kForgetPasswordView,
         builder: (context, state) => const ForgetPasswordView(),
+      ),
+      GoRoute(
+        path: kChangePasswordView,
+        builder: (context, state) => const ChangePassword(),
       ),
       GoRoute(
         path: kAdminView,
