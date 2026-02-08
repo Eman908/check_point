@@ -1,11 +1,12 @@
-🏢 Check Point
+# 🏢 Check Point
 
 A Flutter-based B2B Attendance Management System powered entirely by Firebase.
 The system enables organizations to manage employees and verify real attendance using secure, rotating QR codes.
 
 Built to remove manual tracking, reduce fraud, and give management full visibility over staff presence.
+<hr />
 
-📱 About The System
+#📱 About The System
 
 Check Point is designed for workplaces where employees attend physically but management needs digital verification.
 
@@ -17,7 +18,9 @@ No shared devices.
 No fake check-ins.
 
 ✨ Core Features
-👨‍💼 Manager Panel
+<hr />
+
+#👨‍💼 Manager Panel
 
 Secure login & password recovery
 
@@ -35,7 +38,7 @@ Real-time attendance monitoring
 
 Export attendance history as PDF
 
-👩‍💻 Staff Panel
+#👩‍💻 Staff Panel
 
 Login & reset password
 
@@ -47,7 +50,7 @@ Attendance proof saved in database
 
 Personal attendance history
 
-🔐 Security Logic
+#🔐 Security Logic
 
 QR codes expire automatically
 
@@ -75,7 +78,7 @@ Date
 
 Reports are generated locally on device using a custom PDF builder.
 
-🧠 Architecture
+#🧠 Architecture
 
 The project follows a scalable and testable architecture:
 
@@ -102,7 +105,7 @@ injectable
 
 This structure keeps features isolated and easy to extend.
 
-🔥 Backend
+#🔥 Backend
 
 Fully serverless backend powered by Firebase:
 
@@ -114,7 +117,7 @@ Secure multi-company structure
 
 No traditional backend server required.
 
-🛠️ Tech Stack
+#🛠️ Tech Stack
 
 Flutter & Dart
 
@@ -132,7 +135,7 @@ Local PDF Reporting
 
 Dependency Injection
 
-📦 Packages Used
+#📦 Packages Used
 
 firebase_core
 
@@ -163,12 +166,14 @@ intl
 shared_preferences
 
 uuid
+<hr />
 
-📸 Screenshots
+#📸 Screenshots
 
 <table> <tr> <td><img src="https://github.com/user-attachments/assets/ca302e76-af2d-41d0-b13f-15eb4ebdf291" width="200" /></td> <td><img src="https://github.com/user-attachments/assets/686c3a84-9409-4bce-bbdc-87d25c27edcb" width="200" /></td> <td><img src="https://github.com/user-attachments/assets/0dd75f9d-dc83-46db-a9c4-58b95456de4b" width="200" /></td> .</tr> <tr> <td><img src="https://github.com/user-attachments/assets/22be74b4-2642-4c2d-9329-233ebe0e0764" width="200" /></td> <td><img src="https://github.com/user-attachments/assets/9e101c0f-fc12-4550-b11d-316ff41e0ba5" width="200" /></td> <td><img src="https://github.com/user-attachments/assets/466ab2ff-577d-4d91-852d-df2c8648abc9" width="200" /></td> </tr> <tr> .<td><img src="https://github.com/user-attachments/assets/c5e0df03-f056-4d1e-a56b-4743bf4dd681" width="200" /></td> </table>
 
-🚀 Workflow
+#🚀 Workflow
+<hr />
 
 Manager creates workspace
 
@@ -202,8 +207,9 @@ Co-working spaces
 git clone <repo>
 flutter pub get
 flutter run
+<hr />
 
-🧩 Concept
+#🧩 Concept
 
 Attendance is no longer a manual claim —
 it becomes a verified event based on identity and time.
